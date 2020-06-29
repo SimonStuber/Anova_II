@@ -1,0 +1,92 @@
+- Class: meta
+  Course: Anova II
+  Lesson: Anova II
+  Author: Simon Stuber
+  Type: Standard
+  Organization: Universitaet Koblenz/Landau
+  Version: 2.4.5
+
+- Class: text
+  Output: Heute beschaeftigen wir uns weiter mit der Anova. Wir schauen uns den Fall an, in dem wir zwei unabhaengige Variablen haben. Diese beiden Variablen, koennen nun direkt einen Einfluss auf die abhaengige Variable haben (Haupteffekt), oder sie koennen miteinander Interagieren (Interaktionseffekt). Am besten beginnen wir damit, uns einen boxplot der Daten anzuschauen. Zuerst muessen wir unsere Daten allerdings laden.  
+
+- Class: cmd_question
+  Output: Fuehren Sie den Befehl "load(dateipfad_rda)" aus
+  CorrectAnswer: load(dateipfad_rda)
+  AnswerTests: omnitest(correctExpr='load(dateipfad_rda)')
+  Hint: Der Befehl lautet "load(dateipfad_rda)"
+
+- Class: cmd_question
+  Output: Schauen Sie sich die Daten mit dem View() Befehl an. 
+  CorrectAnswer: View(data)
+  AnswerTests: omnitest(correctExpr='View(data)')
+  Hint: Der Befehl lautet "View(data)"
+  
+- Class: text
+  Output: Es gibt also drei Spalten in unserem Datensatz. Die unabhaengigen Variablen A und B welche die Werte Ja/Nein und Gross/Klein annehmen koennen, und die abhaengige Variable y.
+  
+- Class: mult_question
+  Output: Wie lautet der Befehl um einen Boxplot fuer jede Gruppe zu erstellen?
+  AnswerChoices: boxplot(data$y ~ data$A*data$B);boxplot(data$A, data$B);plot(anova(data$y ~ data$A*data$B))
+  CorrectAnswer: boxplot(data$y ~ data$A*data$B)
+  AnswerTests: omnitest(correctVal= 'boxplot(data$y ~ data$A*data$B)')
+  Hint: hint
+
+- Class: text
+  Output: Fuheren Sie den Befehl aus. Dann koennen wir im Plot erkennen, dass die Gruppen die auf der Variable B den Wert "Klein" haben, niedrigere Werte auf der abhaengigen Variable haben als Gruppen die den Wert "Gross" auf der Variable B haben. Ausserdem erkennen wir, dass sich die beiden rechten Gruppen mehr voneinander unterscheiden als die beiden linken Gruppen und das die Unterschiede in eine andere Richtung gehen. Das deutet auf eine Interaktion hin; Der Wert der Variable A sorgt nur fuer andere Gruppenunterschiede unter der Bedingung, dass die Variable B einen bestimmten Wert annimmt. 
+
+- Class: text
+  Output: Bevor wir diese ersten Ueberlegungen mit einer Anova ueberpruefen koennen, muessen wir die Vorraussetzungen testen. 
+
+- Class: mult_question
+  Output: Was ist eine Vorraussetzung der Anova?
+  AnswerChoices: Varianzhomogenitaet; Heteroskedastizitaet; Normal verteilte Faktoren
+  CorrectAnswer: Varianzhomogenitaet
+  AnswerTests: omnitest(correctVal= 'Varianzhomogenitaet')
+  Hint: hint
+
+
+- Class: cmd_question
+  Output: Die Annahme gleicher Varianzen leasst sich mit einem Levene Test kontrollieren. Fuehren Sie diesen Test aus. Verwenden Sie die leveneTest() Funktion aus dem Paket "car".
+  CorrectAnswer: leveneTest(data$y ~ data$A * data$B, center=means)
+  AnswerTests: omnitest(correctExpr='leveneTest(data$y ~ data$A * data$B, center=mean)')
+  Hint: Der korrekte Befehl lautet "leveneTest(data$y ~ data$A * data$B, center=mean)"
+
+- Class: text
+  Output: Der Test ist nicht signifikant. Das bedeutet, dass sich die Varianzen der vier Gruppen nicht signifikant voneinander unterscheiden. 
+
+
+- Class: cmd_question
+  Output: Wir koennen nun also eine Anova rechnen. Verwendent Sie den aov() Befehl um das Modell festzulegen. Speichern Sie das Modell in einem Objekt namens "mod" 
+  CorrectAnswer: mod <- aov(data$y ~ data$A * data$B)
+  AnswerTests: omnitest(correctExpr='mod <- aov(data$y ~ data$A * data$B)')
+  Hint: Der korrekte Befehl lautet "mod <- aov(data$y ~ data$A * data$B)"
+
+- Class: cmd_question
+  Output: Erzeugen Sie nun den Output mit der Anova() Funktion aus dem car Paket. 
+  CorrectAnswer: Anova(mod)
+  AnswerTests: omnitest(correctExpr='Anova(mod)')
+  Hint: Der korrekte Befehl lautet "Anova(mod)"
+
+- Class: text
+  Output: Sie sehen also, dass wir einen signifikanten Interaktionseffekt haben. Ausserdem haben wir einen signifikanten Haupteffekt fuer die Variable B. Fuer den Faktor A, haben wir keinen Haupteffekt.  
+
+- Class: cmd_question
+  Output: Als naechstes moechten wir natuerlich wissen, wie gross diese Effekte sind. Verwenden Sie hierfuer die etaSquared() Funktion aus dem Paket lsr. 
+  CorrectAnswer: etaSquared(mod)
+  AnswerTests: omnitest(correctExpr='etaSquared(mod)')
+  Hint: Der korrekte Befehl lautet "etaSquared(mod)"
+
+- Class: text
+  Output: Wir haben einen sehr kleinen Effekt fuer A und mittelgrosse Effekte fuer B und die Interaktion A*B.
+
+- Class: cmd_question
+  Output: Die Anova ist ein Omnibus Test, d.h., dass dieser Test uns nur sagt, dass die Gruppen sich signifikant unterscheiden. Wir erfahren aber nicht, welche Gruppe sich genau unterscheiden. Mit post-hoc Tests koennen wir schauen, welche Gruppen sich unterscheiden. Verwenden Sie hierfuer die TukeyHSD() Funktion.  
+  CorrectAnswer: TukeyHSD(mod)
+  AnswerTests: omnitest(correctExpr='TukeyHSD(mod)')
+  Hint: Der korrekte Befehl lautet "TukeyHSD(mod)"
+
+- Class: text
+  Output: Die Gruppen Nein:Klein und Nein:Gross unterscheiden sich nicht. Hier ist der P-Wert >.05. Alle andere Gruppen unterscheiden sich signifikant voneinander. 
+
+- Class: text
+  Output: Das war die heutige Lesson. Bis naechste Woche!
